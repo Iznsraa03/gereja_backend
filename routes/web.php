@@ -9,6 +9,12 @@ Route::get('/', function () {
     return redirect('/admin/login');
 });
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\FacilityController;
+use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\ArticleController;
+
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -16,8 +22,17 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
+        
+        // Churches (Existing basic routes)
         Route::get('/churches', [ChurchController::class, 'index']);
         Route::get('/churches/create', [ChurchController::class, 'create']);
         Route::post('/churches', [ChurchController::class, 'store']);
+        
+        // New CRUD routes
+        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::resource('facilities', FacilityController::class)->except(['show']);
+        Route::resource('activities', ActivityController::class)->except(['show']);
+        Route::resource('announcements', AnnouncementController::class)->except(['show']);
+        Route::resource('articles', ArticleController::class)->except(['show']);
     });
 });

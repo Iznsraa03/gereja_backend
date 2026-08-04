@@ -11,10 +11,16 @@
         @auth
         <nav class="bg-blue-600 text-white p-4 flex justify-between shadow-md">
             <a href="/admin/dashboard" class="font-bold text-xl">Church Finder Admin</a>
-            <div class="flex gap-4 items-center">
+            <div class="flex gap-4 items-center overflow-x-auto whitespace-nowrap">
+                <a href="/admin/dashboard" class="hover:underline">Dashboard</a>
                 <a href="/admin/churches" class="hover:underline">Churches</a>
+                <a href="/admin/categories" class="hover:underline">Categories</a>
+                <a href="/admin/facilities" class="hover:underline">Facilities</a>
+                <a href="/admin/activities" class="hover:underline">Activities</a>
+                <a href="/admin/announcements" class="hover:underline">Announcements</a>
+                <a href="/admin/articles" class="hover:underline">Articles</a>
                 <form action="/admin/logout" method="POST" class="inline">
-                    @csrf <button type="submit" class="hover:underline">Logout</button>
+                    @csrf <button type="submit" class="hover:underline font-bold text-red-200">Logout</button>
                 </form>
             </div>
         </nav>
