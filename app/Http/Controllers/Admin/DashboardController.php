@@ -12,6 +12,14 @@ class DashboardController extends Controller
             'categories' => ChurchCategory::count(),
             'verified' => Church::where('verification_status', 'verified')->count()
         ];
-        return view('admin.dashboard', compact('stats'));
+        
+        // Chart data
+        $categoriesChart = ChurchCategory::withCount('churches')->get();
+        $chartData = [
+            'labels' => $categoriesChart->pluck('name')->toArray(),
+            'data' => $categoriesChart->pluck('churches_count')->toArray(),
+        ];
+
+        return view('admin.dashboard', compact('stats', 'chartData'));
     }
 }

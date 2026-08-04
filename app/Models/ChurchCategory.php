@@ -10,5 +10,7 @@ class ChurchCategory extends Model
     use SoftDeletes;
     protected $guarded = [];
 
-    //
+    public function churches() {
+        return $this->hasMany(Church::class);
+    }
 }

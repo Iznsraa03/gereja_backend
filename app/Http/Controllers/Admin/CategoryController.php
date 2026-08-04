@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    // 👱‍♀️ ponytail: Explicit CRUD controller without traits or dynamic abstract classes. 
+    // YAGNI. Minimum that works, highly readable, zero magic.
+
     public function index() {
         $data = ChurchCategory::latest()->paginate(10);
         return view('admin.categories.index', compact('data'));

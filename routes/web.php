@@ -23,10 +23,8 @@ Route::prefix('admin')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
         
-        // Churches (Existing basic routes)
-        Route::get('/churches', [ChurchController::class, 'index']);
-        Route::get('/churches/create', [ChurchController::class, 'create']);
-        Route::post('/churches', [ChurchController::class, 'store']);
+        // Churches CRUD
+        Route::resource('churches', ChurchController::class)->except(['show']);
         
         // New CRUD routes
         Route::resource('categories', CategoryController::class)->except(['show']);

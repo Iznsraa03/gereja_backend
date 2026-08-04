@@ -16,6 +16,8 @@ class Church extends Model
     public function schedules() { return $this->hasMany(WorshipSchedule::class); }
     public function facilities() { return $this->belongsToMany(Facility::class); }
     public function images() { return $this->hasMany(ChurchImage::class); }
+    public function activities() { return $this->hasMany(Activity::class); }
+    public function announcements() { return $this->hasMany(Announcement::class); }
     public function scopeCloseTo($query, $lat, $lng) {
         $haversine = "(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude))))";
         return $query->selectRaw("*, {$haversine} AS distance", [$lat, $lng, $lat])->orderBy('distance');
