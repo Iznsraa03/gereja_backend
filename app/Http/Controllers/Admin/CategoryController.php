@@ -27,8 +27,9 @@ class CategoryController extends Controller
             'sort_order' => 'nullable'
         ]);
         
-        // Handle checkboxes
+        // Handle checkboxes and nulls
         $validated['is_active'] = $request->has('is_active');
+        $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         ChurchCategory::create($validated);
         return redirect('/admin/categories')->with('success', 'Category created successfully.');
@@ -47,8 +48,9 @@ class CategoryController extends Controller
             'sort_order' => 'nullable'
         ]);
 
-        // Handle checkboxes
+        // Handle checkboxes and nulls
         $validated['is_active'] = $request->has('is_active');
+        $validated['sort_order'] = $validated['sort_order'] ?? 0;
 
         $item = ChurchCategory::findOrFail($id);
         $item->update($validated);
