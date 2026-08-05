@@ -12,7 +12,7 @@ class Church extends Model
 
     //
 
-    public function category() { return $this->belongsTo(ChurchCategory::class); }
+    public function category() { return $this->belongsTo(ChurchCategory::class, 'church_category_id'); }
     public function schedules() { return $this->hasMany(WorshipSchedule::class); }
     public function facilities() { return $this->belongsToMany(Facility::class); }
     public function images() { return $this->hasMany(ChurchImage::class); }
