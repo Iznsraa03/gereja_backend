@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Church;
 use App\Http\Resources\ChurchResource;
+use Illuminate\Support\Str;
 
 class ChurchController extends Controller
 {
@@ -54,6 +55,54 @@ class ChurchController extends Controller
             'success' => true,
             'message' => 'Detail gereja berhasil diambil',
             'data' => new ChurchResource($church)
+        ]);
+    }
+
+    // ponytail: User submits a new church for admin verification
+    public function store(Request $request) {
+        $data = $request->validate([
+            'name'               => 'required|string|max:150',
+            'church_category_id' => 'required|exists:church_categories,id',
+            'address'            => 'required|string',
+            'district'           => 'nullable|string|max:100',
+            'latitude'           => 'required|numeric',
+            'longitude'          => 'required|numeric',
+            'description'        => 'nullable|string',
+            'phone'              => 'nullable|string|max:20',
+            'capacity'           => 'nullable|integer',
+            'main_image'         => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
+        ]);
+
+        $data['slug']                = Str::slug($data['name']) . '-' . uniqid();
+        $data['verification_status'] = 'draft';
+        $data['submitted_by']        = $request->user()->id; // ponytail: stored for traceability
+        $data['city']                = 'Makassar';
+        $data['province']            = 'Sulawesi Selatan';
+
+        if ($request->hasFile('main_image')) {
+            $data['main_image_path'] = $request->file('main_image')->store('churches', 'public');
+        }
+        unset($data['main_image']);
+
+        $church = Church::create($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Gereja berhasil dikirim dan menunggu verifikasi admin.',
+            'data'    => new ChurchResource($church->load(['category', 'facilities', 'schedules', 'activities', 'images']))
+        ], 201);
+    }
+
+    // ponytail: Let user check their own submissions
+    public function mySubmissions(Request $request) {
+        $churches = Church::with(['category', 'images'])
+            ->where('submitted_by', $request->user()->id)
+            ->latest()
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data'    => ChurchResource::collection($churches)
         ]);
     }
 }

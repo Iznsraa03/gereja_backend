@@ -7,8 +7,13 @@ use App\Models\ChurchCategory;
 
 class ChurchController extends Controller
 {
-    public function index() {
-        $churches = Church::with('category')->paginate(15);
+    public function index(Request $request) {
+        $query = Church::with('category');
+        // ponytail: filter by status tab
+        if ($request->status && $request->status !== 'all') {
+            $query->where('verification_status', $request->status);
+        }
+        $churches = $query->latest()->paginate(15)->withQueryString();
         return view('admin.churches.index', compact('churches'));
     }
     public function create() {
@@ -69,5 +74,17 @@ class ChurchController extends Controller
     public function destroy(Church $church) {
         $church->delete();
         return redirect('/admin/churches')->with('success', 'Church deleted successfully.');
+    }
+
+    // ponytail: quick verify
+    public function verify(Church $church) {
+        $church->update(['verification_status' => 'verified', 'verified_at' => now(), 'verified_by' => auth()->id()]);
+        return back()->with('success', "'{$church->name}' telah diverifikasi.");
+    }
+
+    // ponytail: quick reject
+    public function reject(Church $church) {
+        $church->update(['verification_status' => 'rejected']);
+        return back()->with('error', "'{$church->name}' telah ditolak.");
     }
 }

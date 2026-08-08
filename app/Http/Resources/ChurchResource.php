@@ -49,6 +49,8 @@ class ChurchResource extends JsonResource
             'distance_km' => $this->when(isset($this->distance), function () {
                 return round($this->distance, 2);
             }),
+            // ponytail: expose status for user's own submissions
+            'status_verifikasi' => $this->verification_status,
         ];
     }
 }

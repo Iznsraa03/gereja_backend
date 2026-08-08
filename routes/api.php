@@ -31,5 +31,9 @@ Route::prefix('v1')->group(function () {
         
         Route::get('/reminders', [ReminderController::class, 'index']);
         Route::post('/reminders/{schedule}', [ReminderController::class, 'toggle']);
+
+        // ponytail: User church submission endpoints
+        Route::post('/churches', [ChurchController::class, 'store']);
+        Route::get('/my-submissions', [ChurchController::class, 'mySubmissions']);
     });
 });

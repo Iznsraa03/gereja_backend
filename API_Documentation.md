@@ -1,21 +1,11 @@
 # Church Finder API Documentation (v1)
 
-Base URL: `http://localhost:8000/api/v1`
+Base URL Production: `https://gerejamakassar.my.id/api/v1`
 Authentication: Bearer Token (Sanctum)
 
-Semua *response* API mengikuti standar format JSON berikut (kecuali ada *error* dari server):
+Format response standar:
 ```json
-{
-    "success": true,
-    "data": { ... } // Atau array [...]
-}
-```
-Jika terjadi *error* validasi / logika:
-```json
-{
-    "success": false,
-    "message": "Pesan error"
-}
+{ "success": true, "data": { ... } }
 ```
 
 ---
@@ -23,218 +13,132 @@ Jika terjadi *error* validasi / logika:
 ## 1. Authentication
 
 ### Register
-Mendaftarkan pengguna baru.
-- **Endpoint**: `POST /register`
-- **Body**:
-  ```json
-  {
-      "name": "Budi Santoso",
-      "email": "budi@example.com",
-      "password": "password123",
-      "password_confirmation": "password123"
-  }
-  ```
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": {
-          "user": { "id": 1, "name": "Budi Santoso", "email": "budi@example.com" },
-          "token": "1|LaravelSanctumToken..."
-      }
-  }
-  ```
+- **POST** `/register`
+- **Body**: `{ "name", "email", "password", "password_confirmation" }`
+- **Response**: `{ "success": true, "data": { "token": "..." } }`
 
 ### Login
-- **Endpoint**: `POST /login`
-- **Body**:
-  ```json
-  {
-      "email": "budi@example.com",
-      "password": "password123"
-  }
-  ```
-- **Response**: Mengembalikan objek `user` dan `token` seperti *Register*.
+- **POST** `/login`
+- **Body**: `{ "email", "password" }`
+- **Response**: `{ "success": true, "data": { "token": "..." } }`
 
-### Logout (Membutuhkan Auth)
-- **Endpoint**: `POST /logout`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "message": "Logged out successfully"
-  }
-  ```
+### Logout (Auth Required)
+- **POST** `/logout`
+- **Header**: `Authorization: Bearer {token}`
 
-### Get Profile (Membutuhkan Auth)
-- **Endpoint**: `GET /me`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**: Mengembalikan data `user` saat ini.
+### Get Current User (Auth Required)
+- **GET** `/me`
+- **Header**: `Authorization: Bearer {token}`
 
 ---
 
-## 2. Master Data
+## 2. Categories
 
-### Get Categories
-Mengambil semua data kategori denominasi gereja.
-- **Endpoint**: `GET /categories`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": [
-          {
-              "id": 1,
-              "name": "Gereja Toraja",
-              "slug": "gereja-toraja"
-          },
-          {
-              "id": 2,
-              "name": "Gereja Katolik",
-              "slug": "gereja-katolik"
-          }
-      ]
-  }
-  ```
-
-### Get Articles
-Mengambil daftar artikel / renungan mingguan.
-- **Endpoint**: `GET /articles`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": [
-          {
-              "id": 1,
-              "title": "Renungan Minggu Ini",
-              "slug": "renungan-minggu-ini",
-              "excerpt": "Cuplikan isi renungan..."
-          }
-      ]
-  }
-  ```
-
-### Get Article Detail
-- **Endpoint**: `GET /articles/{slug}`
-- **Response**: Mengembalikan satu objek artikel lengkap dengan `content` penuh.
+### List All Categories
+- **GET** `/categories`
+- **Response**: `[{ "id", "name", "slug" }]`
 
 ---
 
-## 3. Churches (Pencarian Gereja)
+## 3. Churches (Publik)
 
-### Get All Churches (Search & Filter)
-- **Endpoint**: `GET /churches`
-- **Query Params**:
-  - `search` (opsional): Mencari nama gereja.
-  - `category` (opsional): Filter berdasarkan slug kategori (misal: `gereja-toraja`).
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": [
-          {
-              "id": 1,
-              "name": "Gereja Toraja Jemaat Makassar",
-              "address": "Jl. Gunung Bawakaraeng No. 1...",
-              "latitude": -5.1345100,
-              "longitude": 119.4182300,
-              "main_image_path": "churches/example-image.jpg",
-              "category": { "name": "Gereja Toraja" }
-          }
-      ]
-  }
-  ```
+### Get All Churches
+- **GET** `/churches`
+- **Query Params**: `search` (opsional), `category_id` (opsional)
+- **Response Fields**: `id`, `nama_gereja`, `slug`, `alamat`, `kecamatan`, `kategori`, `fasilitas[]`, `kapasitas`, `deskripsi`, `jadwal_ibadah[]`, `kegiatan_gereja[]`, `gambar[]`, `latitude`, `longitude`, `status_verifikasi`
 
-### Get Nearby Churches
-Menggunakan formula Haversine untuk mencari gereja terdekat dari titik pengguna.
-- **Endpoint**: `GET /churches/nearby`
-- **Query Params**:
-  - `lat` (wajib): Latitude pengguna (misal: `-5.135399`).
-  - `lng` (wajib): Longitude pengguna (misal: `119.423790`).
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": [
-          {
-              "id": 1,
-              "name": "Gereja Toraja Jemaat Makassar",
-              "main_image_path": "churches/example-image.jpg",
-              "distance": 1.25 // Jarak dalam Kilometer
-          }
-      ]
-  }
-  ```
+> Hanya menampilkan gereja dengan `status_verifikasi = "verified"`.
+
+### Get Nearby Churches (Haversine)
+- **GET** `/churches/nearby`
+- **Query Params**: `latitude` (wajib), `longitude` (wajib), `search` (opsional), `category_id` (opsional)
+- **Response Fields**: sama seperti di atas + `distance_km` (jarak dalam km dari titik pengguna)
 
 ### Get Church Detail
-Mengambil profil lengkap satu gereja, beserta jadwal ibadah, fasilitas, dan kegiatan (relasi).
-- **Endpoint**: `GET /churches/{slug}`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "data": {
-          "id": 1,
-          "name": "Gereja Toraja Jemaat Makassar",
-          "description": "Gereja ini melayani jemaat...",
-          "main_image_path": "churches/example-image.jpg",
-          "schedules": [
-              {
-                  "id": 1,
-                  "title": "Pagi (06.00)",
-                  "start_time": "08:00:00"
-              }
-          ],
-          "facilities": [
-              {
-                  "name": "Gedung Gereja"
-              }
-          ],
-          "activities": [
-              {
-                  "title": "Ibadah Sekolah Minggu (Minggu, 08.00)"
-              }
-          ]
-      }
-  }
-  ```
+- **GET** `/churches/{slug}`
+- **Response**: satu objek church lengkap
 
 ---
 
-## 4. User Interactions (Membutuhkan Auth)
+## 4. User Church Submission (Auth Required)
 
-### Get Favorites
-- **Endpoint**: `GET /favorites`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**: Mengembalikan daftar gereja yang difavoritkan oleh user.
+### Submit Church Baru
+Pengguna yang sudah login dapat mengajukan data gereja baru. Status awal `draft` dan tidak tampil di publik sampai disetujui admin.
+
+- **POST** `/churches`
+- **Header**: `Authorization: Bearer {token}`, `Content-Type: multipart/form-data`
+- **Body**:
+
+| Field | Tipe | Wajib | Keterangan |
+|-------|------|-------|------------|
+| `name` | string | ✅ | Nama gereja |
+| `church_category_id` | integer | ✅ | ID kategori gereja |
+| `address` | string | ✅ | Alamat lengkap |
+| `district` | string | | Kecamatan |
+| `latitude` | numeric | ✅ | Koordinat latitude |
+| `longitude` | numeric | ✅ | Koordinat longitude |
+| `description` | string | | Deskripsi gereja |
+| `phone` | string | | Nomor telepon |
+| `capacity` | integer | | Kapasitas jemaat |
+| `main_image` | file (jpg/png/webp, max 10MB) | | Foto utama gereja |
+
+- **Response** `201`:
+```json
+{
+    "success": true,
+    "message": "Gereja berhasil dikirim dan menunggu verifikasi admin.",
+    "data": {
+        "id": 10,
+        "nama_gereja": "Gereja XYZ",
+        "status_verifikasi": "draft",
+        ...
+    }
+}
+```
+
+### Lihat Pengajuan Saya
+Melihat daftar gereja yang pernah diajukan oleh pengguna yang sedang login, beserta status verifikasinya.
+
+- **GET** `/my-submissions`
+- **Header**: `Authorization: Bearer {token}`
+- **Response**: array church milik user dengan `status_verifikasi` (`draft` / `verified` / `rejected`)
+
+---
+
+## 5. Favorites (Auth Required)
+
+### List Favorites
+- **GET** `/favorites`
 
 ### Toggle Favorite
-Menambah atau menghapus gereja dari daftar favorit.
-- **Endpoint**: `POST /favorites/{church_id}`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "message": "Church added to favorites." // Atau "Church removed from favorites."
-  }
-  ```
+- **POST** `/favorites/{church_id}`
 
-### Get Reminders
-- **Endpoint**: `GET /reminders`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**: Mengembalikan jadwal ibadah yang diingatkan (reminders).
+---
+
+## 6. Reminders (Auth Required)
+
+### List Reminders
+- **GET** `/reminders`
 
 ### Toggle Reminder
-Menyalakan atau mematikan pengingat untuk suatu jadwal ibadah.
-- **Endpoint**: `POST /reminders/{schedule_id}`
-- **Headers**: `Authorization: Bearer <token>`
-- **Response**:
-  ```json
-  {
-      "success": true,
-      "message": "Reminder set successfully."
-  }
-  ```
+- **POST** `/reminders/{schedule_id}`
+
+---
+
+## 7. Articles
+
+### List Articles
+- **GET** `/articles`
+
+### Article Detail
+- **GET** `/articles/{slug}`
+
+---
+
+## Admin Verification Flow (Admin Panel Only)
+
+> Tidak diakses via API mobile. Hanya tersedia di admin panel `https://gerejamakassar.my.id/admin`.
+
+- Admin membuka **Manage Churches** → tab **Pending**
+- Klik **✓ Setujui** untuk mengubah status menjadi `verified` (gereja langsung tampil di publik)
+- Klik **✗ Tolak** untuk mengubah status menjadi `rejected`

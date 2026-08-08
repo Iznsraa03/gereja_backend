@@ -25,6 +25,8 @@ Route::prefix('admin')->group(function () {
         
         // Churches CRUD
         Route::resource('churches', ChurchController::class)->except(['show']);
+        Route::post('/churches/{church}/verify', [ChurchController::class, 'verify'])->name('churches.verify');
+        Route::post('/churches/{church}/reject', [ChurchController::class, 'reject'])->name('churches.reject');
         
         // New CRUD routes
         Route::resource('categories', CategoryController::class)->except(['show']);
