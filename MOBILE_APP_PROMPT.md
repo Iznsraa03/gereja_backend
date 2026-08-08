@@ -7,76 +7,82 @@
 
 ---
 
-## Fitur Baru: User Dapat Mengajukan Gereja
+## Fitur Baru: User Dapat Mengajukan Gereja (Dengan Caching & Auto-Sync Status)
 
-### Alur (Flow)
-1. User login → dapatkan token
-2. User isi form pengajuan gereja (nama, alamat, koordinat, foto)
-3. `POST /api/v1/churches` dengan Bearer Token → response status `draft`
-4. Admin review di admin panel → setujui atau tolak
-5. User cek status pengajuan via `GET /api/v1/my-submissions`
+### Alur Kerja & Strategi Cache (Offline-First Sync)
+1. User login → dapatkan Bearer Token.
+2. User isi form pengajuan gereja (nama, alamat, koordinat, foto).
+3. App mengirim `POST /api/v1/churches` → backend mengembalikan data gereja baru dengan `status_verifikasi: "draft"`.
+4. App **langsung menyimpan** data pengajuan ini ke dalam **database lokal perangkat** (misal: Room DB / Hive / Sqflite).
+5. Admin melakukan review di Admin Panel (`verified` / `rejected`).
+6. Ketika user membuka halaman "Pengajuan Saya" (atau saat background sync / Pull-to-Refresh):
+   - App menampilkan data dari **cache perangkat terlebih dahulu** secara instan.
+   - App melakukan fetch ke `GET /api/v1/my-submissions` untuk mengambil status terbaru dari server.
+   - App memperbarui database lokal *(upsert)* dengan `status_verifikasi` terbaru dari server.
+   - UI akan **otomatis ter-update secara reaktif** saat cache lokal diperbarui (misal status berubah dari `draft` 🟡 menjadi `verified` 🟢 atau `rejected` 🔴).
 
 ---
 
-## Prompt untuk Fitur Submit Gereja (Kotlin / Jetpack Compose)
+## Prompt untuk Fitur Submit & Cache Gereja (Android Kotlin / Jetpack Compose)
 
 ```
-Buatkan screen "Ajukan Gereja" pada aplikasi Android (Kotlin + Jetpack Compose + Retrofit) yang:
+Buatkan arsitektur Repository (Offline-First / Cache-Then-Network) pada aplikasi Android (Kotlin + Jetpack Compose + Room + Retrofit + Flow) untuk fitur "Ajukan Gereja" dengan ketentuan:
 
-1. Menampilkan form input dengan field:
-   - Nama Gereja (TextField)
-   - Kategori (DropdownMenu dari GET /api/v1/categories)
-   - Alamat (TextField multiline)
-   - Kecamatan (TextField)
-   - Latitude & Longitude (bisa diisi manual atau dari GPS device)
-   - Deskripsi (TextField multiline, opsional)
-   - Telepon (TextField, opsional)
-   - Kapasitas (NumberField, opsional)
-   - Foto Utama (ImagePicker, max 10MB, upload as multipart/form-data)
+1. Local Cache (Room DB):
+   - Buat Entity `SubmittedChurchEntity` dengan field: id, namaGereja, alamat, kecamatan, kategori, statusVerifikasi ("draft", "verified", "rejected"), latitude, longitude, lastSyncedAt.
+   - Buat `SubmittedChurchDao` dengan query `getAllSubmittedChurches(): Flow<List<SubmittedChurchEntity>>` dan `upsertAll(churches: List<SubmittedChurchEntity>)`.
 
-2. Setelah submit sukses (201), tampilkan pesan:
-   "Gereja berhasil dikirim! Menunggu verifikasi dari admin."
+2. Form Input Screen ("Ajukan Gereja"):
+   - Form field: Nama Gereja, Kategori (Dropdown dari GET /api/v1/categories), Alamat, Kecamatan, Lat/Lng, Deskripsi, Telepon, Kapasitas, Foto Utama (ImagePicker max 10MB).
+   - Saat submit (POST /api/v1/churches via Multipart), simpan respons sukses (201) secara langsung ke Room DB lokal dengan status initial "draft".
 
-3. Tambahkan screen "Pengajuan Saya" yang memanggil GET /api/v1/my-submissions
-   dan menampilkan list gereja dengan badge status:
-   - 🟡 Pending (draft)
-   - 🟢 Disetujui (verified)
-   - 🔴 Ditolak (rejected)
+3. List Screen ("Pengajuan Saya"):
+   - Mengamati Room DB via StateFlow / Flow (Single Source of Truth) sehingga UI tampil instan tanpa loading dari network jika data lokal sudah ada.
+   - Panggil `GET /api/v1/my-submissions` di background (atau via SwipeRefresh).
+   - Update data di Room DB dengan hasil response server terbaru. Jika admin telah menyetujui (`status_verifikasi == "verified"`), status di Room DB otomatis ter-update dan UI ter-render ulang secara reaktif.
 
-4. Semua request wajib menyertakan header:
-   Authorization: Bearer {token}
-   Content-Type: multipart/form-data (untuk POST /churches)
+4. UI Badge Status:
+   - 🟡 Draft / Pending (`draft`)
+   - 🟢 Disetujui (`verified`)
+   - 🔴 Ditolak (`rejected`)
 
 API endpoint:
 - POST https://gerejamakassar.my.id/api/v1/churches (multipart/form-data)
-- GET  https://gerejamakassar.my.id/api/v1/my-submissions
+- GET  https://gerejamakassar.my.id/api/v1/my-submissions (Bearer Token)
 - GET  https://gerejamakassar.my.id/api/v1/categories
 ```
 
 ---
 
-## Prompt untuk Fitur Submit Gereja (Flutter / Dart)
+## Prompt untuk Fitur Submit & Cache Gereja (Flutter / Dart)
 
 ```
-Buatkan fitur "Ajukan Gereja" pada aplikasi Flutter yang:
+Buatkan fitur "Ajukan Gereja" & "Pengajuan Saya" pada aplikasi Flutter menggunakan pendekatan Cache-First & Auto-Sync (Hive / Sqflite / HydratedBloc) yang:
 
-1. Form dengan TextFormField untuk: name, address, district, latitude, longitude, description, phone, capacity
-2. Dropdown kategori dari GET /api/v1/categories
-3. ImagePicker untuk foto utama gereja (upload multipart)
-4. Tombol submit memanggil:
-   POST https://gerejamakassar.my.id/api/v1/churches
-   menggunakan http.MultipartRequest dengan header Authorization Bearer Token
-5. Setelah berhasil, navigasi ke screen "Pengajuan Saya"
-6. Screen "Pengajuan Saya" (GET /api/v1/my-submissions) menampilkan ListView
-   dengan Chip status berwarna:
-   - amber (draft/pending)
-   - green (verified)
-   - red (rejected)
+1. Local Database Setup (Hive / Sqflite):
+   - Simpan data pengajuan user secara lokal di perangkat (`submitted_churches_box`).
+   - Setiap item menyimpan `status_verifikasi` ("draft", "verified", "rejected").
+
+2. Form "Ajukan Gereja":
+   - Form input lengkap (name, address, district, lat, lng, description, phone, capacity, main_image).
+   - Submit via `http.MultipartRequest` ke `POST https://gerejamakassar.my.id/api/v1/churches`.
+   - Setelah sukses (201), simpan objek hasil response ke lokal database dan navigasi ke "Pengajuan Saya".
+
+3. Screen "Pengajuan Saya" (Cache + Sync Strategy):
+   - Saat dibuka, langsung tampilkan list pengajuan dari cache lokal perangkat (tanpa delay).
+   - Jalankan pemanggilan background ke `GET https://gerejamakassar.my.id/api/v1/my-submissions` (Header `Authorization: Bearer {token}`).
+   - Ketika server merespons data terbaru, perbarui data lokal di Hive/Sqflite.
+   - Status pengajuan yang sudah di-approve admin (`status_verifikasi == "verified"`) akan otomatis ter-update di cache lokal dan mentrigger setState / ValueListenableBuilder / Bloc State.
+
+4. Tampilan Chip Status:
+   - Amber / Kuning (draft/pending)
+   - Green / Hijau (verified)
+   - Red / Merah (rejected)
 ```
 
 ---
 
-## Field Response Kunci
+## Field Response Kunci (Sync Target)
 
 ```json
 {
