@@ -28,7 +28,9 @@ Route::get('/download-apk', function () {
     if (!file_exists($path)) {
         abort(404, 'APK belum tersedia.');
     }
-    return response()->download($path, 'ChurchFinderMakassar.apk');
+    return response()->download($path, 'ChurchFinderMakassar.apk', [
+        'Content-Type' => 'application/vnd.android.package-archive',
+    ]);
 })->name('download.apk');
 
 // Admin Panel (moved from /admin to /admin-panel)
