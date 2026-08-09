@@ -23,7 +23,7 @@ Route::get('/', function () {
 });
 
 // APK Download
-Route::get('/download-apk', function () {
+Route::get('/download/ChurchFinderMakassar.apk', function () {
     $path = storage_path('app/public/downloads/church_finder.apk');
     if (!file_exists($path)) {
         abort(404, 'APK belum tersedia.');
