@@ -60,6 +60,11 @@ class ChurchController extends Controller
 
     // ponytail: User submits a new church for admin verification
     public function store(Request $request) {
+        // Handle capacity conversion if passed as string like "-" or empty
+        if ($request->has('capacity') && (!is_numeric($request->capacity) || (int)$request->capacity <= 0)) {
+            $request->merge(['capacity' => null]);
+        }
+
         $data = $request->validate([
             'name'               => 'required|string|max:150',
             'church_category_id' => 'required|exists:church_categories,id',
