@@ -68,7 +68,7 @@
             <a href="#features" class="text-slate-400 hover:text-sky-400 transition-colors text-sm font-medium cursor-pointer">Fitur</a>
             <a href="#how-it-works" class="text-slate-400 hover:text-sky-400 transition-colors text-sm font-medium cursor-pointer">Cara Kerja</a>
             <a href="#download" class="text-slate-400 hover:text-sky-400 transition-colors text-sm font-medium cursor-pointer">Unduh APK</a>
-            <a href="/admin-panel/login" class="text-slate-500 hover:text-slate-300 transition-colors text-sm cursor-pointer">Admin Panel</a>
+
             <a href="#download" class="btn-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold cursor-pointer">
                 Unduh Gratis
             </a>
@@ -85,7 +85,6 @@
         <a href="#features" class="block text-slate-300 hover:text-sky-400 py-2 px-4 rounded-lg transition-colors cursor-pointer">Fitur</a>
         <a href="#how-it-works" class="block text-slate-300 hover:text-sky-400 py-2 px-4 rounded-lg transition-colors cursor-pointer">Cara Kerja</a>
         <a href="#download" class="block text-slate-300 hover:text-sky-400 py-2 px-4 rounded-lg transition-colors cursor-pointer">Unduh APK</a>
-        <a href="/admin-panel/login" class="block text-slate-500 hover:text-slate-300 py-2 px-4 rounded-lg transition-colors cursor-pointer">Admin Panel</a>
         <a href="#download" class="block btn-primary text-white px-4 py-2.5 rounded-xl font-semibold text-center cursor-pointer">Unduh Gratis</a>
     </div>
 </nav>
@@ -433,7 +432,7 @@
                 <a href="#features" class="hover:text-slate-300 transition-colors cursor-pointer">Fitur</a>
                 <a href="#how-it-works" class="hover:text-slate-300 transition-colors cursor-pointer">Cara Kerja</a>
                 <a href="#download" class="hover:text-slate-300 transition-colors cursor-pointer">Unduh APK</a>
-                <a href="/admin-panel/login" class="hover:text-slate-300 transition-colors cursor-pointer text-xs">Admin Panel</a>
+
             </div>
 
             <div class="text-slate-500 text-xs text-center">
