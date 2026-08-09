@@ -19,7 +19,7 @@
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full shadow-lg shadow-black/20 z-10 flex-shrink-0">
         <div class="p-6 border-b border-slate-800">
             <a href="/admin-panel/dashboard" class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></span>
+                <img src="{{ asset('logo/LOGO.jpeg') }}" alt="Logo" class="w-6 h-6 object-cover rounded-md">
                 Admin Panel
             </a>
         </div>

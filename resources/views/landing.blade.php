@@ -60,9 +60,7 @@
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
         <a href="/" class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
-                <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/></svg>
-            </div>
+            <img src="{{ asset('logo/LOGO.jpeg') }}" alt="Church Finder Logo" class="w-9 h-9 rounded-xl object-cover shadow-lg shadow-sky-500/20">
             <span class="font-bold text-white text-lg tracking-tight" style="font-family:'Outfit',sans-serif">Church Finder</span>
         </a>
 
@@ -390,9 +388,7 @@
 
         <div class="glass rounded-3xl p-8 max-w-md mx-auto">
             <!-- App icon -->
-            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-sky-500/30">
-                <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/></svg>
-            </div>
+            <img src="{{ asset('logo/LOGO.jpeg') }}" alt="Church Finder App Icon" class="w-20 h-20 rounded-3xl object-cover mx-auto mb-6 shadow-xl shadow-sky-500/30">
 
             <h3 class="text-2xl font-black text-white mb-1" style="font-family:'Outfit',sans-serif">Church Finder Makassar</h3>
             <p class="text-slate-400 text-sm mb-6">v1.0.0 · Android 8.0+ · ~15 MB</p>
@@ -426,9 +422,7 @@
     <div class="max-w-7xl mx-auto px-6">
         <div class="flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7L12 4.18z"/></svg>
-                </div>
+                <img src="{{ asset('logo/LOGO.jpeg') }}" alt="Logo" class="w-8 h-8 rounded-xl object-cover">
                 <div>
                     <p class="font-bold text-white text-sm" style="font-family:'Outfit',sans-serif">Church Finder Makassar</p>
                     <p class="text-slate-500 text-xs">© {{ date('Y') }} Hak cipta dilindungi</p>
