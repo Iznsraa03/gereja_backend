@@ -18,24 +18,26 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col h-full shadow-lg shadow-black/20 z-10 flex-shrink-0">
         <div class="p-6 border-b border-slate-800">
-            <a href="/admin/dashboard" class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
+            <a href="/admin-panel/dashboard" class="font-bold text-xl tracking-tight text-white flex items-center gap-2">
                 <span class="w-3 h-3 rounded-full bg-indigo-500 animate-pulse"></span>
                 Admin Panel
             </a>
         </div>
         
         <nav class="flex-grow p-4 space-y-1 overflow-y-auto">
-            <a href="/admin/dashboard" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Dashboard</a>
-            <a href="/admin/churches" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Churches</a>
-            <a href="/admin/categories" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Categories</a>
-            <a href="/admin/facilities" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Facilities</a>
-            <a href="/admin/activities" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Activities</a>
-            <a href="/admin/announcements" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Announcements</a>
-            <a href="/admin/articles" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Articles</a>
+            <a href="/admin-panel/dashboard" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Dashboard</a>
+            <a href="/admin-panel/churches" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Churches</a>
+            <a href="/admin-panel/categories" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Categories</a>
+            <a href="/admin-panel/facilities" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Facilities</a>
+            <a href="/admin-panel/activities" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Activities</a>
+            <a href="/admin-panel/announcements" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Announcements</a>
+            <a href="/admin-panel/articles" class="block px-4 py-2 text-slate-300 hover:bg-slate-800 hover:text-white rounded-md transition-colors font-medium">Articles</a>
+            <hr class="border-slate-700 my-2">
+            <a href="/" class="block px-4 py-2 text-slate-500 hover:bg-slate-800 hover:text-slate-300 rounded-md transition-colors text-sm">← Lihat Landing Page</a>
         </nav>
         
         <div class="p-4 border-t border-slate-800">
-            <form action="/admin/logout" method="POST">
+            <form action="/admin-panel/logout" method="POST">
                 @csrf 
                 <button type="submit" class="w-full text-left px-4 py-2 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-md transition-colors font-medium">
                     Logout
@@ -51,6 +53,11 @@
             @if(session('success')) 
                 <div class="bg-emerald-900/30 border border-emerald-500/30 text-emerald-400 p-4 rounded-lg mb-6 shadow-sm">
                     {{ session('success') }}
+                </div> 
+            @endif
+            @if(session('error')) 
+                <div class="bg-red-900/30 border border-red-500/30 text-red-400 p-4 rounded-lg mb-6 shadow-sm">
+                    {{ session('error') }}
                 </div> 
             @endif
             @if($errors->any()) 

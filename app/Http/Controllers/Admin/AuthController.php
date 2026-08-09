@@ -13,7 +13,7 @@ class AuthController extends Controller
         $credentials = $request->validate(['email' => 'required|email', 'password' => 'required']);
         if (Auth::attempt($credentials) && Auth::user()->role === 'admin') {
             $request->session()->regenerate();
-            return redirect()->intended('/admin/dashboard');
+            return redirect()->intended('/admin-panel/dashboard');
         }
         Auth::logout();
         return back()->withErrors(['email' => 'The provided credentials do not match our records or you are not an admin.'])->onlyInput('email');
@@ -22,6 +22,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/admin/login');
+        return redirect('/admin-panel/login');
     }
 }
