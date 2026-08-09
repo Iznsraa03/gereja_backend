@@ -40,7 +40,11 @@ class ChurchController extends Controller
         unset($data['main_image']); // Don't try to save the uploaded file object to DB
         
         Church::create($data);
-        return redirect('/admin/churches')->with('success', 'Church added successfully.');
+        return redirect('/admin-panel/churches')->with('success', 'Church added successfully.');
+    }
+    
+    public function show(Church $church) {
+        return view('admin.churches.show', compact('church'));
     }
     
     public function edit(Church $church) {
@@ -68,12 +72,12 @@ class ChurchController extends Controller
         unset($data['main_image']);
         
         $church->update($data);
-        return redirect('/admin/churches')->with('success', 'Church updated successfully.');
+        return redirect('/admin-panel/churches')->with('success', 'Church updated successfully.');
     }
     
     public function destroy(Church $church) {
         $church->delete();
-        return redirect('/admin/churches')->with('success', 'Church deleted successfully.');
+        return redirect('/admin-panel/churches')->with('success', 'Church deleted successfully.');
     }
 
     // ponytail: quick verify

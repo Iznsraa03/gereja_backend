@@ -13,7 +13,7 @@
             @endforeach
         </div>
     </div>
-    <a href="/admin/churches/create" class="bg-blue-600 text-white px-4 py-2 rounded shadow text-sm font-medium hover:bg-indigo-500 transition-colors duration-200">+ Add Church</a>
+    <a href="/admin-panel/churches/create" class="bg-blue-600 text-white px-4 py-2 rounded shadow text-sm font-medium hover:bg-indigo-500 transition-colors duration-200">+ Add Church</a>
 </div>
 <div class="bg-slate-900 border border-slate-800 shadow-xl rounded overflow-hidden">
     <table class="w-full text-sm">
@@ -56,11 +56,12 @@
                 </td>
                 <td class="p-3">
                     <div class="flex gap-2 flex-wrap">
-                        <a href="/admin/churches/{{ $item->id }}/edit" class="text-indigo-400 hover:text-indigo-300 transition-colors">Edit</a>
+                        <a href="/admin-panel/churches/{{ $item->id }}" class="text-sky-400 hover:text-sky-300 transition-colors">Detail</a>
+                        <a href="/admin-panel/churches/{{ $item->id }}/edit" class="text-indigo-400 hover:text-indigo-300 transition-colors">Edit</a>
 
                         {{-- Verify button (only if not verified) --}}
                         @if($item->verification_status !== 'verified')
-                        <form action="/admin/churches/{{ $item->id }}/verify" method="POST">
+                        <form action="/admin-panel/churches/{{ $item->id }}/verify" method="POST">
                             @csrf
                             <button type="submit" class="text-emerald-400 hover:text-emerald-300 transition-colors">✓ Setujui</button>
                         </form>
@@ -68,13 +69,13 @@
 
                         {{-- Reject button (only if not rejected) --}}
                         @if($item->verification_status !== 'rejected')
-                        <form action="/admin/churches/{{ $item->id }}/reject" method="POST" onsubmit="return confirm('Tolak gereja ini?')">
+                        <form action="/admin-panel/churches/{{ $item->id }}/reject" method="POST" onsubmit="return confirm('Tolak gereja ini?')">
                             @csrf
                             <button type="submit" class="text-red-400 hover:text-red-300 transition-colors">✗ Tolak</button>
                         </form>
                         @endif
 
-                        <form action="/admin/churches/{{ $item->id }}" method="POST" onsubmit="return confirm('Delete this church?')">
+                        <form action="/admin-panel/churches/{{ $item->id }}" method="POST" onsubmit="return confirm('Delete this church?')">
                             @csrf @method('DELETE')
                             <button type="submit" class="text-slate-500 hover:text-red-400 transition-colors">Hapus</button>
                         </form>

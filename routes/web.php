@@ -42,7 +42,7 @@ Route::prefix('admin-panel')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index']);
 
-        Route::resource('churches', ChurchController::class)->except(['show']);
+        Route::resource('churches', ChurchController::class);
         Route::post('/churches/{church}/verify', [ChurchController::class, 'verify'])->name('churches.verify');
         Route::post('/churches/{church}/reject', [ChurchController::class, 'reject'])->name('churches.reject');
 
