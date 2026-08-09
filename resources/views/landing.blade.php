@@ -390,7 +390,7 @@
             <img src="{{ asset('logo/LOGO.jpeg') }}" alt="Church Finder App Icon" class="w-20 h-20 rounded-3xl object-cover mx-auto mb-6 shadow-xl shadow-sky-500/30">
 
             <h3 class="text-2xl font-black text-white mb-1" style="font-family:'Outfit',sans-serif">Church Finder Makassar</h3>
-            <p class="text-slate-400 text-sm mb-6">v1.0.0 · Android 8.0+ · ~15 MB</p>
+            <p class="text-slate-400 text-sm mb-6">v1.0.0 · Android 8.0+</p>
 
             <!-- Requirements -->
             <div class="flex justify-center gap-6 mb-8 text-sm">
